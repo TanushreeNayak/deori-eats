@@ -1,12 +1,11 @@
+from backend.app.routers import restaurants
 from fastapi import FastAPI
 from app.routers import auth
 
-app = FastAPI(
-    title="Deori Eats API",
-    version="1.0.0"
-)
+app = FastAPI()
 
 app.include_router(auth.router)
+app.include_router(restaurants.router)
 
 @app.get("/")
 def home():

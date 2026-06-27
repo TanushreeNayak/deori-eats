@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-
+from fastapi import HTTPException
 from app.deps import get_db
 from app.models.order import Order
 from app.schemas.order import OrderCreate
@@ -37,3 +37,27 @@ def get_orders(
     db: Session = Depends(get_db)
 ):
     return db.query(Order).all()
+
+@router.put("/{order_id}/status")
+def update_order_status(
+    order_id: int,
+    status: str,
+    db: Session = Depends(get_db)
+):
+    order = db.query(Order).filter(Order.id == order_id).first()
+
+    if not order:
+        raise HTTPException(
+            status_code=404,
+            detail="Order not found"
+        )
+
+    order.status = status
+
+    db.commit()
+    db.refresh(order)
+
+    return {
+        "message": "Order status updated",
+        "order": order
+    }

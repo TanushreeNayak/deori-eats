@@ -10,13 +10,11 @@ router = APIRouter(
     tags=["Menu"]
 )
 
-
 @router.post("/")
 def create_menu_item(
     item: MenuItemCreate,
     db: Session = Depends(get_db)
 ):
-
     new_item = MenuItem(
         restaurant_id=item.restaurant_id,
         name=item.name,
@@ -34,20 +32,17 @@ def create_menu_item(
         "menu_item_id": new_item.id
     }
 
-
 @router.get("/")
 def get_all_menu_items(
     db: Session = Depends(get_db)
 ):
     return db.query(MenuItem).all()
 
-
 @router.get("/{restaurant_id}")
 def get_restaurant_menu(
     restaurant_id: int,
     db: Session = Depends(get_db)
 ):
-
     items = (
         db.query(MenuItem)
         .filter(MenuItem.restaurant_id == restaurant_id)
